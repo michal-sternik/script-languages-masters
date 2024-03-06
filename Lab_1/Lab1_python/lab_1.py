@@ -29,7 +29,10 @@ def test_correctness():
 
 def test_performance(iterations):
     loaded_data = read_data_from_file('../test_data.txt')
-
+# blad wzgledny -2 <= x-xprim <= 2
+    # |x-xprim| <= 2s
+    # dla bledu pomiaru 1s to bedzie 2s bo w jedna i druga strone wiec 2/x-2
+    #dla x=200 bedzie 2/198 *100% czyli wiecej niz 1 wiec za malo
     #calculate time needed for empty loop
     start_time = time.time()
     for _ in range(1, iterations):
@@ -50,6 +53,6 @@ def test_performance(iterations):
 
 
 # Testowanie poprawności
-test_correctness()
-# test_performance(10000)
+# test_correctness()
+test_performance(100000)
 

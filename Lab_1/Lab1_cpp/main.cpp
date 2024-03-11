@@ -6,7 +6,6 @@
 using namespace std;
 
 int median_low(vector<int> array) {
-// we work on array copy so theres no need to do anything
     sort(array.begin(), array.end());
     int median_low;
     if (array.size() % 2 == 0) {
@@ -69,38 +68,43 @@ void test_correctness() {
     write_result_to_file("../../cpp_result_data.txt", results);
 }
 
-void test_performance(int iterations) {
+void test_performance() {
     vector<vector<int>> loaded_data = read_data_from_file("../../test_data.txt");
+    cout << "Loaded data " << endl;
+
     typedef chrono::high_resolution_clock clock;
     typedef chrono::milliseconds ms;
     typedef chrono::duration<float> fsec;
 
     auto start_time = clock::now();
-    for (int i = 1; i < iterations; i++) {
-        for (vector<int> test_set : loaded_data) {
-            // Do nothing
-        }
+
+    for (vector<int> test_set : loaded_data) {
+        // Do nothing
     }
+
     auto end_time = clock::now();
     fsec empty_time = end_time - start_time;
 //    cout << "Empty Time: " << empty_time << " seconds" << endl;
 
     start_time = clock::now();
-    for (int i = 1; i < iterations; i++) {
+
+    for(int i = 0; i < 7; i++){
         for (vector<int> test_set : loaded_data) {
             median_low(test_set);
         }
+//        cout << i << endl;
     }
     end_time = clock::now();
     fsec execution_time = end_time - start_time - empty_time;
+    double relative_error = (4 / (execution_time.count() - 4)) * 100;
+    std::cout << "Blad wzgledny: " << relative_error << "%" << std::endl;
     cout << "Execution Time: " << execution_time << " seconds" << endl;
 }
 
 int main() {
-//    test_correctness();
-    for (int i = 1; i < 100; i++) {
-        test_performance(10000);
-    }
+//    test_correctness(); for (int i = 1; i < 100; i++) {
+    test_performance();
+
     return 0;
 }
 

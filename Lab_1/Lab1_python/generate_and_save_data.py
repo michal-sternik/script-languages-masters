@@ -1,6 +1,5 @@
 import random
 
-
 def generate_random_data(size):
     return [random.randint(1, 1000) for _ in range(size)]
 
@@ -13,9 +12,9 @@ def write_data_to_file(filename, data):
 def prepare_data(number_of_datarows):
     test_sets = []
     for i in range(1, number_of_datarows):
-        test_sets.append(generate_random_data(i))
+        test_sets.append(generate_random_data(random.randint(1000, 10000)))
     write_data_to_file(
         "../test_data.txt",
         test_sets)
 
-prepare_data(10)
+prepare_data(1000)

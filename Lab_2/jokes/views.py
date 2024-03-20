@@ -1,7 +1,11 @@
+from django.shortcuts import render, redirect
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Joke
+from random import randrange
 from django.http import HttpResponse
-
-
+from .forms import RegisterForm
+from django.contrib.auth import login, logout, authenticate
 # def index(request):
 #     return HttpResponse("Hello, world. You're at the jokes index.")
 
@@ -25,10 +29,10 @@ from django.http import HttpResponse
 
 
 # views.py
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import Joke
-from random import randrange
+
+
+import os
+from django.conf import settings
 
 def index(request):
     """
@@ -50,6 +54,8 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
+def login(request):
+    return render(request, 'registration/login.html')
 
 def get_random_joke():
     """
@@ -65,6 +71,19 @@ def get_random_joke():
         return None
     return Joke.objects.all()[rand]
 
+# view for register form
+def register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+
+            return redirect('/home')
+    else:
+        form = RegisterForm()
+
+    return render(request, "registration/sign-up.html", {"form":form})
+
 # models.py
 from django.db import models
 
@@ -78,12 +97,7 @@ from django.db import models
 #         return self.text[:50] + '...'
 
 # urls.py
-from django.urls import path
-from . import views
 
-urlpatterns = [
-    path('', views.home, name='home'),
-]
 
 # templates/index.html
 # <!DOCTYPE html>

@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% block title %}Login{% endblock %}
+{% load crispy_forms_tags %} {% block content %}
+
+
+
+        <section class="vh-100">
+          <div class="container py-5 h-100">
+            <div class="row d-flex pt-5 justify-content-center h-100">
+              <div class="col-md-8 col-lg-7 col-xl-6">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
+                  class="img-fluid" alt="Phone image">
+              </div>
+              <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+                <form method="post">
+                    <h1>Log in to your account!</h1>
+		<br>
+		<br>
+          {% csrf_token %}{{form|crispy}}{% csrf_token %}
+          <p>Don't have an account? Create one <a href="/sign-up">Here</a>!</p>
+          <button type="submit" class="btn btn-success">Login</button>
+                    {% csrf_token %}
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

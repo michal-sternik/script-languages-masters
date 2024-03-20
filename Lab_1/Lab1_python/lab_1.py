@@ -40,8 +40,9 @@ def test_performance():
     #dla x=200 bedzie 2/198 *100% czyli wiecej niz 1 wiec za malo
     #calculate time needed for empty loop
     start_time = time.time()
-    for test_set in loaded_data:
-        pass
+    for n in range(1, 700):
+        for test_set in loaded_data:
+            pass
     end_time = time.time()
     empty_time = end_time - start_time
     print(f"Empty Time: {empty_time:.6f} seconds")
@@ -59,8 +60,9 @@ def test_performance():
     print(f"Execution Time: {execution_time:.6f} seconds")
 
     start_time = time.time()
-    for test_set in loaded_data:
-        statistics.median_low(test_set)
+    for n in range(1, 700):
+        for test_set in loaded_data:
+            statistics.median_low(test_set)
     end_time = time.time()
     execution_time = end_time - start_time - empty_time
     print(f"Execution Time (build-in function): {execution_time:.6f} seconds")

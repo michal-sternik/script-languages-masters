@@ -1,0 +1,110 @@
+
+body {
+    text-align: center;
+}
+
+/*.navbar-custom {*/
+/*  height: 100px;*/
+/*}*/
+.klasa{
+    font-size: 0px;
+}
+
+.grow {
+    transition: all .2s ease-in-out;
+}
+.grow:hover {
+    transform: scale(1.4);
+}
+
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    width: 100vw;
+    z-index: 999;
+}
+
+.joke-list-item {
+    /*line-height: 1.5em;*/
+    /*height: 6em;       !* height is 2x line-height, so two lines will display *!*/
+    /*overflow: hidden;  !* prevents extra lines from being visible *!*/
+    overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 4; /* number of lines to show */
+           line-clamp: 4;
+   -webkit-box-orient: vertical;
+}
+
+.random-joke {
+    overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 15; /* number of lines to show */
+           line-clamp: 15;
+   -webkit-box-orient: vertical;
+}
+
+.clear { clear: both; height: 60px; }
+
+.navbar-nav.navbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translatex(-50%);
+}
+
+.navbar-nav.navbar-right {
+    position: absolute;
+    left: 90%;
+    transform: translatex(-50%);
+}
+
+.textarea-endlines {
+    white-space: pre-wrap;
+}
+
+body {
+  /* fallback for old browsers */
+  background: #a18cd1;
+
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(to right, rgba(161, 140, 209, 0.5), rgba(251, 194, 235, 0.5));
+
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(to right, rgba(161, 140, 209, 0.5), rgba(251, 194, 235, 0.5))
+}
+
+.navbar-custom {
+  height: 70px;
+}
+
+.filter-blue {
+    filter: invert(9%) sepia(100%) saturate(7256%) hue-rotate(248deg) brightness(89%) contrast(145%);
+}
+
+.pagination-page-info {
+    padding: .6em;
+    padding-left: 0;
+    width: 40em;
+    margin: .5em;
+    margin-left: 0;
+    font-size: 12px;
+}
+.pagination-page-info b {
+    color: black;
+    background: #6aa6ed;
+    padding-left: 2px;
+    padding: .1em .25em;
+    font-size: 150%;
+}

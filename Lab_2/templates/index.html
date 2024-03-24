@@ -5,20 +5,22 @@
         <div class="row">
             <div class="col-6 pt-5 text-center">
                 <div class="container bg-dark p-5 text-white" style="border-radius: 50px">
-                <div class="pb-5 font-italic">
+                <div class="pb-3 font-italic">
                     <h1>
-                    Random Joke
+                    Losowy kawał
                     </h1>
                 </div>
                 {% if random_joke != None %}
-                <a href="/" class="text-decoration-none text-dark">
+
                 {% endif %}
                 <div class="text-justify display-5 border border-dark rounded p-5 bg-dark">
                     <div class="random-joke font-italic font-weight-normal text-white">
                         {% if random_joke != None %}
+                            <h3>{{ random_joke.name }}</h3>
                             {{ random_joke.content }}
+                            <a href="{% url 'joke_detail' random_joke.id %}" ><p class="mt-5" style="color: white">Skomentuj</p></a>
                         {% else %}
-                            No jokes at this time. Add some to see random jokes here!
+                            Aktualnie nie ma żadnych kawałów! Poczekaj aż się pojawią.
                         {% endif %}
                     </div>
                 </div>
@@ -27,7 +29,7 @@
             </div>
             <div class="col-6 pt-5 text-center font-italic">
                 <div class="text-right text-dark">
-                    <h1>Welcome to TodayJokes!</h1>
+                    <h1>Witaj w TodayJokes!</h1>
                     <img src="{% static 'images/dad.png' %}" class="img-fluid" alt="Responsive image">
                 </div>
             </div>

@@ -10,5 +10,12 @@
       <jdbc-url>jdbc:sqlite:C:\Users\march3wa\Desktop\Jezyki Skryptowe\Lab_2\db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="db" uuid="efb06785-8e69-4ab6-907d-70e455c6959e">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\march\Desktop\Studia\Semestr 1\Jezyki Skryptowe\script-languages-masters\Lab_2\db.sqlite3</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

@@ -1,48 +1,18 @@
-from django.shortcuts import render, redirect
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import Joke
+from django.contrib import messages
+from django.contrib.admin.templatetags.admin_list import pagination
+from .models import Joke, CustomUser, ReviewRating
 from random import randrange
-from django.http import HttpResponse
-from .forms import RegisterForm
-from django.contrib.auth import login, logout, authenticate
-# def index(request):
-#     return HttpResponse("Hello, world. You're at the jokes index.")
-
-# def index(request):
-    # product = Product.objects.all()
-    #
-    # valid_profiles_id_list = Product.objects.all().values_list('id', flat=True)
-    # random_return_size = 8
-    # if valid_profiles_id_list.count() < 8:
-    #     random_return_size = random.randint(int(valid_profiles_id_list.count()/2), valid_profiles_id_list.count())
-    #
-    # random_profiles_id_list = random.sample(list(valid_profiles_id_list), random_return_size)
-    # query_set = Product.objects.filter(id__in=random_profiles_id_list).order_by('?')
-    #
-    # 
-    # context={
-    #     'object_list': product,
-    #     'proposed_products' : query_set
-    # }
-    # return render(request,'index.html')#,context)
-
-
-# views.py
-
-
-import os
-from django.conf import settings
+from django.http import HttpResponse, JsonResponse
+from .forms import RegisterForm, AddJokeForm, ReviewForm
+from django.http import Http404
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.utils import timezone
+from django.shortcuts import render, get_object_or_404,redirect
+from .models import Joke
 
 def index(request):
     """
     Render the home page with a random joke.
-
-    Args:
-        request (HttpRequest): The incoming request object.
-
-    Returns:
-        HttpResponse: The rendered home page.
     """
     username = request.user.username if request.user.is_authenticated else None
     is_authenticated = request.user.is_authenticated
@@ -60,9 +30,6 @@ def login(request):
 def get_random_joke():
     """
     Get a random joke from the database.
-
-    Returns:
-        Joke: A random joke object, or None if the database is empty.
     """
     try:
         count = Joke.objects.count()
@@ -84,38 +51,111 @@ def register(request):
 
     return render(request, "registration/sign-up.html", {"form":form})
 
-# models.py
-from django.db import models
-
-# class Joke(models.Model):
-#     """
-#     A model representing a joke.
-#     """
-#     text = models.TextField()
-#
-#     def __str__(self):
-#         return self.text[:50] + '...'
-
-# urls.py
 
 
-# templates/index.html
-# <!DOCTYPE html>
-# <html>
-# <head>
-#     <title>Jokes</title>
-# </head>
-# <body>
-#     {% if is_authenticated %}
-#         <p>Welcome, {{ username }}!</p>
-#     {% else %}
-#         <p>You are not logged in.</p>
-#     {% endif %}
-#
-#     {% if random_joke %}
-#         <p>Random Joke: {{ random_joke.text }}</p>
-#     {% else %}
-#         <p>No jokes available.</p>
-#     {% endif %}
-# </body>
-# </html>
+
+def add_joke(request):
+    form = AddJokeForm(request.POST or None)
+
+    user = get_object_or_404(CustomUser,id=request.user.id)
+
+    if form.is_valid():
+        Joke.objects.create(
+            name=form.cleaned_data['name'],
+            content=form.cleaned_data['content'],
+            author=user,
+            datetime=timezone.now(),
+            likes=0
+        )
+        return redirect('joke_list')
+
+    return render(request, 'add-joke.html', {'form': form})
+
+
+def delete_joke(request, id):
+    selected_joke = get_object_or_404(Joke, id=id)
+    if selected_joke:
+        if request.user.role == "ADMIN":
+            selected_joke.delete()
+            return redirect('joke_list')
+        else:
+            raise Http404
+    else:
+        raise Http404
+
+
+def joke_list(request):
+    jokes = Joke.objects.all()
+
+    if request.method == 'POST':
+        sorting = request.POST.get('sorting', 'date')
+        descending = request.POST.get('descending', 'False')
+        name_search = request.POST.get('name_search', None)
+        author_search = request.POST.get('author_search', None)
+        content_search = request.POST.get('content_search', None)
+
+        if sorting == 'date':
+            jokes = jokes.order_by('-datetime' if descending == 'True' else 'datetime')
+        elif sorting == 'likes':
+            jokes = jokes.order_by('-likes' if descending == 'True' else 'likes')
+
+        if name_search:
+            jokes = jokes.filter(name__icontains=name_search)
+        if author_search:
+            jokes = jokes.filter(author__icontains=author_search)
+        if content_search:
+            jokes = jokes.filter(content__icontains=content_search)
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(jokes, 5)
+    try:
+        jokes = paginator.page(page)
+    except PageNotAnInteger:
+        jokes = paginator.page(1)
+    except EmptyPage:
+        jokes = paginator.page(paginator.num_pages)
+
+    context = {
+        'jokes': jokes,
+        'username': request.user.username,
+    }
+
+    return render(request, 'joke-list.html', context)
+
+def joke_like(request, joke_id):
+    joke = get_object_or_404(Joke, pk=joke_id)
+    joke.likes += 1
+    joke.save()
+    return JsonResponse({'likes': joke.likes})
+
+
+def joke_detail(request, joke_id):
+    """
+    View function to display a single joke.
+    """
+
+    selected_joke = get_object_or_404(Joke, pk=joke_id)
+
+    review_list = ReviewRating.objects.filter(joke_id = joke_id)
+
+    return render(request, "joke.html", {
+        "joke": selected_joke,
+        "user":request.user,
+        "review_list": review_list
+    })
+
+def submit_review(request, id=None):
+    url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                data = ReviewRating()
+                # data.rating = form.cleaned_data['rating']
+                data.review = form.cleaned_data['review']
+                joke = get_object_or_404(Joke, id=id)
+                data.joke = joke
+                data.created_at = timezone.now()
+                data.author = request.user
+                data.save()
+                messages.success(request, 'Thank you! Your review has been submitted.')
+                return redirect(url)

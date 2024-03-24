@@ -12,12 +12,12 @@
               </div>
               <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
                 <form method="post">
-                    <h1>Log in to your account!</h1>
+                    <h1>Zaloguj się do swojego konta!</h1>
 		<br>
 		<br>
           {% csrf_token %}{{form|crispy}}{% csrf_token %}
-          <p>Don't have an account? Create one <a href="/sign-up">Here</a>!</p>
-          <button type="submit" class="btn btn-success">Login</button>
+          <p>Nie masz jeszcze konta? Utwórz <a href="/sign-up">tutaj</a>!</p>
+          <button type="submit" class="btn btn-success">Zaloguj</button>
                     {% csrf_token %}
         </form>
 

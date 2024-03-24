@@ -13,13 +13,13 @@
                   class="img-fluid" alt="Phone image">
               </div>
               <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
-                  <h1>Register new account!</h1>
+                  <h1>Zarejestruj się!</h1>
                     <br>
 
                 <form method="post">
                   {% csrf_token %}{{form|crispy}}
-                  <p>Have an account? Login <a href="/login">Here</a>!</p>
-                  <button type="submit" class="btn btn-success">Register</button>
+                  <p>Masz już konto? Zaloguj się <a href="/login">tutaj</a>!</p>
+                  <button type="submit" class="btn btn-success">Zarejestruj</button>
                 </form>
 
       </div>

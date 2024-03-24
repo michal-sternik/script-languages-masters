@@ -73,7 +73,12 @@ footer {
 .textarea-endlines {
     white-space: pre-wrap;
 }
-
+.centerItems {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 body {
   /* fallback for old browsers */
   background: #a18cd1;

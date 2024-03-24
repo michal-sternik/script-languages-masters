@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container" style="display: flex; justify-content: center; margin-top: 30px;align-items: center; flex-direction: column;">
+<h1>Add new joke here</h1>
+    <form method="post" style="display: flex; justify-content: center" action="">
+        {% csrf_token %}
+        <ul class="form-group " style="display: flex; flex-direction: column; align-items: center;padding: 10px">
+            <li class="form-row p-2 centerItems" style="display: flex; flex-direction: column; align-items: center">
+                {{ form.name|as_crispy_field }}
+            </li>
+            <li class="form-row p-2 centerItems" style="display: flex; flex-direction: column; align-items: center">
+                {{ form.content|as_crispy_field}}
+            </li>
+            <li class="form-row p-2 centerItems" style="display: flex; flex-direction: column; align-items: center">
+                <button type="submit" class="btn btn-success">Dodaj kawał</button>
+                    {% csrf_token %}
+            </li>
+        </ul>
+
+    </form>
+</div>
+{% endblock %}

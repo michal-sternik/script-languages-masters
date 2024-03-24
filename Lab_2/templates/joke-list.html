@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container"style="background: rgba(236, 148, 203, 0.24); border: 3px solid black; border-radius: 10px; margin-top:20px;padding: 20px; display: flex;flex-direction: column">
+    <form method="post" action="{% url 'joke_list' %}">
+                {% csrf_token %}
+        <p class="d-inline-flex">Sorting:</p>
+        <div class="form-check form-check-inline p-2">
+            <input class="form-check-input" type="radio" name="sorting" id="date" value="date" checked>
+            <label class="form-check-label" for="date">
+                Data
+            </label>
+        </div>
+        <div class="form-check form-check-inline p-2">
+            <input class="form-check-input" type="radio" name="sorting" id="likes" value="likes">
+            <label class="form-check-label" for="likes">
+                Polubienia
+            </label>
+        </div>
+        <div class="form-check form-check-inline p-2">
+            <input class="form-check-input" type="radio" name="descending" id="ascending" value="False" checked>
+            <label class="form-check-label" for="ascending">
+                Rosnąco
+            </label>
+        </div>
+        <div class="form-check form-check-inline p-2">
+            <input class="form-check-input" type="radio" name="descending" id="descending" value="True">
+            <label class="form-check-label" for="descending">
+                Malejąco
+            </label>
+        </div>
+        <input type="text" placeholder="Tytuł..." name="name_search" value="{{ request.POST.name_search }}">
+        <input type="text" name="author_search" placeholder="Autor..." value="{{ request.POST.author_search }}">
+        <input type="text" name="content_search" placeholder="Zawartość..." value="{{ request.POST.content_search }}">
+        <button class="btn btn-success" type="submit">Apply</button>
+    </form>
+
+    <ul class="list-unstyled list-group pt-3">
+    <div >
+      <article class="blog-post">
+                                <hr>
+        {% if not jokes %}
+            <p>Brak kawałów.</p>
+        {% endif %}
+        {% for joke in jokes %}
+            <div style="display: flex; flex-direction: row; justify-content: space-between">
+        <a href="{% url 'joke_detail' joke.id %}"><h2 class="blog-post-title">{{ joke.name }}</h2></a>
+            {% if request.user.is_authenticated and request.user.role == "ADMIN"%}
+            <a href={% url "delete_joke" joke.id %}><i class="fa fa-trash" aria-hidden="true"></i></a>
+            {% endif %}
+            </div>
+        <p class="blog-post-meta">{{ joke.datetime }} by <b>{{ joke.author.username }}</b></p>
+        <p>{{ joke.content }}</p>
+
+            <i  class="fas fa-heart" onclick="jokeLike({{ joke.id }})" style="cursor:pointer;margin-right:5px; font-size:24px;color:#FFB6C1;text-shadow: -2px 0 #ff0000, 0 2px #ff0000, 2px 0 #ff0000, 0 -2px #ff0000; " onMouseOver="this.style.color='#ff0000'"  onMouseOut="this.style.color='#FFB6C1'"></i>
+            <span id="likes_{{ joke.id }}" style="margin-right:5%">{{ joke.likes }}</span>
+            <a href="{% url 'joke_detail' joke.id %}">Skomentuj</a>
+                                <hr>
+
+
+        {% endfor %}
+      </article>
+    </div>
+    </ul>
+{% if jokes.has_other_pages %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if jokes.has_previous %}
+                <a href="?page=1">&laquo; pierwsza</a>
+                <a href="?page={{ jokes.previous_page_number }}">poprzednia</a>
+            {% endif %}
+
+            <span class="current">
+                Strona {{ jokes.number }} z {{ jokes.paginator.num_pages }}.
+            </span>
+
+            {% if jokes.has_next %}
+                <a href="?page={{ jokes.next_page_number }}">następna</a>
+                <a href="?page={{ jokes.paginator.num_pages }}">ostatnia &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endif %}
+</div>
+
+
+
+
+
+<div class="clear"></div>
+<div class="container text-center">
+    {{ pagination.links }}
+</div>
+<div class="clear"></div>
+
+<script>
+function jokeLike(jokeId) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("GET", "/joke-like/" + jokeId + "/", true);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            var likesElement = document.getElementById("likes_" + jokeId);
+            if (likesElement) {
+                likesElement.innerHTML = response.likes;
+            }
+        }
+    };
+        var likesElement = document.getElementById("likes_" + jokeId);
+        if (likesElement) {
+            var currentLikes = parseInt(likesElement.innerHTML);
+            likesElement.innerHTML = currentLikes + 1;
+        }
+
+    xhr.send();
+}
+</script>
+
+{% endblock %}
